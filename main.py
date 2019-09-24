@@ -1,10 +1,8 @@
 from model.url import URL
 from model.urlparam import URLParam
-from model.googleflight import GoogleFlight
 from provider.google import Google
 from datetime import datetime
 import time
-import json
 import copy
 
 
