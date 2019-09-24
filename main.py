@@ -1,15 +1,8 @@
 from model.url import URL
 from model.urlparam import URLParam
 from provider.google import Google
-from datetime import datetime
 import time
 import copy
-
-
-def obj_to_dict(obj):
-    if isinstance(obj, datetime):
-        return obj.__str__()
-    return obj.__dict__
 
 
 if __name__ == '__main__':
