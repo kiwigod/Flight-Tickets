@@ -5,6 +5,7 @@ from provider.google import Google
 from datetime import datetime
 import time
 import json
+import copy
 
 
 def obj_to_dict(obj):
@@ -14,17 +15,28 @@ def obj_to_dict(obj):
 
 
 if __name__ == '__main__':
-    gUrl = "https://www.google.com/flights#flt=[start_iata].[end_iata].[start_date]*" \
+    gBaseUrl = "https://www.google.com/flights#flt=[start_iata].[end_iata].[start_date]*" \
            "[end_iata].[start_iata].[end_date];c:EUR;e:1;sd:1;t:f"
-    gUrl = URL(gUrl, URLParam(start_iata='[start_iata]', end_iata='[end_iata]',
-                              start_date='[start_date]', end_date='[end_date]'))
-    gUrl.set_route('AMS', 'ICN')
-    gUrl.set_start_date('2020-04-09')
-    gUrl.set_end_date('2020-04-23')
+    gParamUrl = URL(gBaseUrl, URLParam(start_iata='[start_iata]', end_iata='[end_iata]',
+                                       start_date='[start_date]', end_date='[end_date]'))
+    gParamUrl.set_start_date('2020-04-09')
+    gParamUrl.set_end_date('2020-04-23')
+
+    ams_icn = copy.deepcopy(gParamUrl)
+    ams_icn.set_route('AMS', 'ICN')
+
+    ams_nrt = copy.deepcopy(gParamUrl)
+    ams_nrt.set_route('AMS', 'NRT')
+
+    routes = [
+        ams_icn,
+        ams_nrt
+    ]
 
     g = Google()
-    g.get(gUrl)
-    time.sleep(2)  # windows closes before page can load completely
-    flights: [GoogleFlight] = g.parse()
-    print(json.dumps([x.__dict__ for x in flights], default=obj_to_dict))
+    for route in routes:
+        g.open_in_new_tab(route)
+        time.sleep(2)
+        for flight in g.parse():
+            flight.insert()
     g.quit()
