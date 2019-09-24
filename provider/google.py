@@ -40,5 +40,12 @@ class Google:
             parsed += [g]
         return parsed
 
+    def open_in_new_tab(self, url: URL):
+        self.driver.execute_script("window.open('');")
+        new_tab = self.driver.window_handles[1]
+        self.driver.close()
+        self.driver.switch_to.window(new_tab)
+        self.get(url)
+
     def quit(self):
         self.driver.quit()
