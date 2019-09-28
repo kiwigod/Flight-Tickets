@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS "tickets" (
 	"airline"	TEXT NOT NULL,
 	"duration"	INTEGER NOT NULL,
 	"price"	INTEGER NOT NULL,
-	"transfers"	INTEGER DEFAULT NULL
+	"transfers"	INTEGER DEFAULT NULL,
+	"ts"	TEXT DEFAULT 'strftime(''%Y-%m-%d %H:%M:%S'',''now'')'
 );
 CREATE INDEX IF NOT EXISTS "idxAirline" ON "tickets" (
 	"airline"

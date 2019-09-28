@@ -7,7 +7,7 @@ import copy
 
 if __name__ == '__main__':
     gBaseUrl = "https://www.google.com/flights#flt=[start_iata].[end_iata].[start_date]*" \
-           "[end_iata].[start_iata].[end_date];c:EUR;e:1;sd:1;t:f"
+               "[end_iata].[start_iata].[end_date];c:EUR;e:1;sd:1;t:f"
     gParamUrl = URL(gBaseUrl, URLParam(start_iata='[start_iata]', end_iata='[end_iata]',
                                        start_date='[start_date]', end_date='[end_date]'))
     gParamUrl.set_start_date('2020-04-09')
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     g = Google()
     for route in routes:
         g.open_in_new_tab(route)
-        time.sleep(2)
+        time.sleep(2)  # TODO: use wait; selenium
         for flight in g.parse():
             flight.insert()
     g.quit()
