@@ -12,7 +12,8 @@ class GoogleFlight(DB):
         'airline',
         'duration',
         'price',
-        'transfers'
+        'transfers',
+        'ts'
     ]
 
     def __init__(self, start_dt, end_dt, start_iata, end_iata, airline, duration, price, transfers):
@@ -25,3 +26,4 @@ class GoogleFlight(DB):
         self.duration: int = duration  # duration in minutes
         self.price: int = price
         self.transfers: [Transfer] = transfers
+        self.ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
