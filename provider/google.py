@@ -1,3 +1,4 @@
+from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -15,8 +16,8 @@ import re
 
 
 class Google:
-    def __init__(self, driver, wait=5):
-        self.driver = driver
+    def __init__(self, driver: webdriver, wait=10):
+        self.driver: webdriver = driver
         self.wait = WebDriverWait(self.driver, wait)
 
     def get(self, url: URL):

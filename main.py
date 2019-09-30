@@ -2,7 +2,6 @@ from selenium import webdriver
 from model.url import URL
 from model.urlparam import URLParam
 from provider.google import Google
-import time
 import copy
 
 
@@ -29,7 +28,7 @@ if __name__ == '__main__':
         ams_sin
     ]
 
-    g = Google(webdriver.Chrome(), wait=10)
+    g = Google(webdriver.Firefox())
     for route in routes:
         g.open_in_new_tab(route)
         for flight in g.parse():
