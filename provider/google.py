@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from parsers.google.flights import Flights
 from parsers.google.airline import Airline
 from parsers.google.duration import Duration
@@ -29,9 +30,13 @@ class Google:
         Parse the retrieved web page
         :return: [GoogleFlight] list of flights proposed by Google
         """
-        self.wait.until(EC.presence_of_element_located((
-            By.CLASS_NAME, 'gws-flights-results__cheapest-price'
-        )))
+        try:
+            self.wait.until(EC.presence_of_element_located((
+                By.CLASS_NAME, 'gws-flights-results__cheapest-price'
+            )))
+        except TimeoutException:
+            print(type(self).__name__, "- failed to fetch web page")
+            pass
         flights = Flights.parse(self.driver)
         dates = re.findall(r'((\d{4})-(\d{2})-(\d{2}))', self.driver.current_url)
         start_date = [int(x) for x in dates[0][1:]]
