@@ -1,3 +1,4 @@
+from selenium import webdriver
 from model.url import URL
 from model.urlparam import URLParam
 from provider.google import Google
@@ -19,15 +20,18 @@ if __name__ == '__main__':
     ams_nrt = copy.deepcopy(gParamUrl)
     ams_nrt.set_route('AMS', 'NRT')
 
+    ams_sin = copy.deepcopy(gParamUrl)
+    ams_sin.set_route('AMS', 'SIN')
+
     routes = [
         ams_icn,
-        ams_nrt
+        ams_nrt,
+        ams_sin
     ]
 
-    g = Google()
+    g = Google(webdriver.Chrome(), wait=10)
     for route in routes:
         g.open_in_new_tab(route)
-        time.sleep(2)  # TODO: use wait; selenium
         for flight in g.parse():
             flight.insert()
     g.quit()
