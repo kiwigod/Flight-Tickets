@@ -1,4 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from parsers.google.flights import Flights
 from parsers.google.airline import Airline
 from parsers.google.duration import Duration
@@ -13,12 +17,21 @@ import re
 
 
 class Google:
-    def __init__(self, driver=webdriver.Firefox()):
-        self.driver = driver
+    def __init__(self, driver: webdriver, wait=10):
+        self.driver: webdriver = driver
+        self.wait = WebDriverWait(self.driver, wait)
 
-    def get(self, url: URL):
+    def get(self, url: URL, wait='gws-flights-results__cheapest-price'):
         print(type(self).__name__, "- retrieving url:", url.url)
         self.driver.get(url.url)
+        try:
+            self.wait.until(EC.presence_of_element_located((
+                By.CLASS_NAME, wait
+            )))
+        except TimeoutException:
+            print(type(self).__name__, "- failed to fetch web page")
+            return False
+        return True
 
     def parse(self) -> [GoogleFlight]:
         """
@@ -41,11 +54,11 @@ class Google:
         return parsed
 
     def open_in_new_tab(self, url: URL):
-        self.driver.execute_script("window.open('');")
+        self.driver.execute_script("window.open('')")
         new_tab = self.driver.window_handles[1]
         self.driver.close()
         self.driver.switch_to.window(new_tab)
-        self.get(url)
+        return self.get(url)
 
     def quit(self):
         self.driver.quit()
