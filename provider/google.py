@@ -21,22 +21,23 @@ class Google:
         self.driver: webdriver = driver
         self.wait = WebDriverWait(self.driver, wait)
 
-    def get(self, url: URL):
+    def get(self, url: URL, wait='gws-flights-results__cheapest-price'):
         print(type(self).__name__, "- retrieving url:", url.url)
         self.driver.get(url.url)
+        try:
+            self.wait.until(EC.presence_of_element_located((
+                By.CLASS_NAME, wait
+            )))
+        except TimeoutException:
+            print(type(self).__name__, "- failed to fetch web page")
+            return False
+        return True
 
     def parse(self) -> [GoogleFlight]:
         """
         Parse the retrieved web page
         :return: [GoogleFlight] list of flights proposed by Google
         """
-        try:
-            self.wait.until(EC.presence_of_element_located((
-                By.CLASS_NAME, 'gws-flights-results__cheapest-price'
-            )))
-        except TimeoutException:
-            print(type(self).__name__, "- failed to fetch web page")
-            pass
         flights = Flights.parse(self.driver)
         dates = re.findall(r'((\d{4})-(\d{2})-(\d{2}))', self.driver.current_url)
         start_date = [int(x) for x in dates[0][1:]]
@@ -53,11 +54,11 @@ class Google:
         return parsed
 
     def open_in_new_tab(self, url: URL):
-        self.driver.execute_script("window.open('');")
+        self.driver.execute_script("window.open('')")
         new_tab = self.driver.window_handles[1]
         self.driver.close()
         self.driver.switch_to.window(new_tab)
-        self.get(url)
+        return self.get(url)
 
     def quit(self):
         self.driver.quit()

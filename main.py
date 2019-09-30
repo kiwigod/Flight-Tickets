@@ -30,10 +30,8 @@ if __name__ == '__main__':
 
     g = Google(webdriver.Firefox())
     for route in routes:
-        g.open_in_new_tab(route)
-        flights = g.parse()
-        if flights is None:
+        if not g.open_in_new_tab(route):
             continue
-        for flight in flights:
+        for flight in g.parse():
             flight.insert()
     g.quit()
